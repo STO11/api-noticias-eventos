@@ -21,7 +21,7 @@ $router->get('/', function () use ($router) {
 
 $router->group([
 
-    //'middleware' => 'api',
+    //'middleware' => 'auth',
     'prefix' => 'api'
 
 ], function () use ($router) {
@@ -29,7 +29,19 @@ $router->group([
     $router->post('login', 'AuthController@login');
     $router->post('logout', 'AuthController@logout');
     $router->post('register', 'AuthController@registerInApp');
+    $router->post('register', 'AuthController@registerExternal');
     $router->post('refresh', 'AuthController@refresh');
-    $router->post('me', 'AuthController@me');
+    
+
+});
+
+$router->group([
+
+    //'middleware' => 'auth',
+    'prefix' => 'api'
+
+], function () use ($router) {
+
+    $router->get('me', 'AuthController@me');
 
 });

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Bussines\HttpCode;
+use Ramsey\Uuid\Uuid;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'registerInApp']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registerInApp', 'me']]);
     }
 
     /**
@@ -38,17 +39,37 @@ class AuthController extends Controller
     }
 
     /**
-     * Requester User.
+     * Requester User in app default
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function registerInApp(Request $request) 
-    {   
-        $input = ['name', 'email', 'password'];
-        $this->validate($request,[
+    public function registerInApp(Request $request)
+    {
+        $input = ['name', 'email', 'password', 'uuid'];
+        $this->validate($request, [
             'name' => 'required',
             'email' => 'required|unique:users,email',
             'password' => 'required|confirmed'
+        ]);
+        extract($request->only($input));
+        $password = Hash::make($password);
+        $uuid = Uuid::uuid4();
+        $user = User::create(compact($input));
+        if ($user)
+            return response()->json(['user' => $user], 201);
+        return response()->json(['msg' => 'Usuário não pode ser criado'], 406);
+    }
+
+    /**
+     * Requester User with Google and Facebook
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registerExternal(Request $request) 
+    {
+        $this->validate($request,[
+            'name' => 'required',
+            'email' => 'required|unique:user,email',
         ]);
         extract($request->only($input));
         $password = Hash::make($password);
@@ -56,15 +77,6 @@ class AuthController extends Controller
         if($user) 
             return response()->json(['user' => $user], 201);
         return response()->json(['msg' => 'Usuário não pode ser criado'], 406);
-    }
-
-    public function registerExternal(Request $request) 
-    {
-        $this->validate($request,[
-            'name' => 'required',
-            'email' => 'required|unique:user,email',
-        ]);
-
     }
 
     /**
