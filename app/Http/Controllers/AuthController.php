@@ -45,6 +45,7 @@ class AuthController extends Controller
      */
     public function registerInApp(Request $request)
     {
+        //dd(get_class_methods(trans()), trans() );
         $input = ['name', 'email', 'password', 'uuid'];
         $this->validate($request, [
             'name' => 'required',
