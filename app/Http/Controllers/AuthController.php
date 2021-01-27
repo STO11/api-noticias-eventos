@@ -67,12 +67,14 @@ class AuthController extends Controller
      */
     public function registerExternal(Request $request) 
     {
+        $input = ['name', 'email', 'password', 'uuid'];
         $this->validate($request,[
             'name' => 'required',
             'email' => 'required|unique:user,email',
         ]);
         extract($request->only($input));
         $password = Hash::make($password);
+        $uuid = Uuid::uuid4();
         $user = User::create(compact($input));
         if($user) 
             return response()->json(['user' => $user], 201);

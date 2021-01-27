@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'defaults' => [
@@ -11,10 +11,9 @@ return [
             'provider' => 'users',
         ],
     ],
-
     'providers' => [
         'users' => [
-            'driver'=>'eloquent',
+            'driver' => 'eloquent',
             'model' => App\Models\User::class
         ]
     ]
