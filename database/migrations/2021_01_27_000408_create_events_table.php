@@ -17,8 +17,8 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('uuid');
             $table->string('title');
-            $table->string('description');
-            $table->string('img');
+            $table->string('description')->nullable();
+            $table->string('img')->nullable();
             $table->dateTime('date');
             $table->enum('active',['yes','no']);
             $table->timestamps();

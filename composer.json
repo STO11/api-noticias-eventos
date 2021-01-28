@@ -19,8 +19,13 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
-        }
+            "Database\\Seeders\\": "database/seeders/",
+            "App\\Business\\": "app/Business"
+        },
+        "classmap": [
+            "app/Business/HttpCodes.php",
+            "app/Business/AuthBusiness.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [

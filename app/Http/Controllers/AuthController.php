@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Bussines\HttpCode;
+use App\Business\AuthBusiness;
+use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
 class AuthController extends Controller
@@ -29,12 +30,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
-
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
+        $token = AuthBusiness::login($request);
         return $this->respondWithToken($token);
     }
 
@@ -45,20 +41,13 @@ class AuthController extends Controller
      */
     public function registerInApp(Request $request)
     {
-        //dd(get_class_methods(trans()), trans() );
         $input = ['name', 'email', 'password', 'uuid'];
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|unique:users,email',
             'password' => 'required|confirmed'
         ]);
-        extract($request->only($input));
-        $password = Hash::make($password);
-        $uuid = Uuid::uuid4();
-        $user = User::create(compact($input));
-        if ($user)
-            return response()->json(['user' => $user], 201);
-        return response()->json(['msg' => 'Usuário não pode ser criado'], 406);
+        return AuthBusiness::registerInApp($request,$input);
     }
 
     /**
@@ -73,13 +62,7 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|unique:user,email',
         ]);
-        extract($request->only($input));
-        $password = Hash::make($password);
-        $uuid = Uuid::uuid4();
-        $user = User::create(compact($input));
-        if($user) 
-            return response()->json(['user' => $user], 201);
-        return response()->json(['msg' => 'Usuário não pode ser criado'], 406);
+        return AuthBusiness::registerExternal($request,$input);
     }
 
     /**
@@ -89,7 +72,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(Auth::user());
     }
 
     /**
@@ -99,7 +82,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+       Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -111,7 +94,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 
     /**
@@ -126,7 +109,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60
         ]);
     }
 }

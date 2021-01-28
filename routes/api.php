@@ -1,17 +1,13 @@
 <?php 
 
 $router->group([
-
-    //'middleware' => 'api',
+    'middleware' => 'auth',
     'prefix' => 'api'
-
 ], function () use ($router) {
 
-    $router->post('login', 'AuthController@login');
-    $router->post('logout', 'AuthController@logout');
-    $router->post('register', 'AuthController@registerInApp');
-    $router->post('registerExternal', 'AuthController@registerExternal');
+    
     $router->post('refresh', 'AuthController@refresh');
+    $router->post('logout', 'AuthController@logout');
     //$router->post('me', 'AuthController@me');
 
 });
@@ -23,6 +19,8 @@ $router->group([
 
 ], function () use ($router) {
 
-    $router->get('me', 'AuthController@me');
-
+    $router->post('me', 'AuthController@me');
+    $router->post('login', 'AuthController@login');
+    $router->post('register', 'AuthController@registerInApp');
+    $router->post('registerExternal', 'AuthController@registerExternal');
 });

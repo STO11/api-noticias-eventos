@@ -1,10 +1,9 @@
 <?php
-
-namespace App\Bussines;
-
+namespace App\Business;
+use Illuminate\Support\Arr;
 class HttpCode
 {
-    public static function getCodeDefaultMessage($status)
+    public static function getCodeDefaultMessage()
     {
         $codes = [
             ['success' => ['code' => 200, 'msg' => 'Operação realizada com sucesso']],
@@ -13,6 +12,6 @@ class HttpCode
             ['unauthorized' => ['code' => 401, 'msg' => 'Operação não autorizado']],
             ['not_found' => ['code' => 404, 'msg' => 'Operação não foi encontrada']]
         ];
-        return $codes[$status];
+        return Arr::collapse($codes);
     }
 }
