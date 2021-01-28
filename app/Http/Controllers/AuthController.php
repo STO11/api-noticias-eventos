@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'registerInApp', 'me']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registerInApp', 'registerExternal', 'me']]);
     }
 
     /**
@@ -30,8 +30,8 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $token = AuthBusiness::login($request);
-        return $this->respondWithToken($token);
+        return AuthBusiness::login($request);
+        //return $this->respondWithToken($token);
     }
 
     /**
@@ -47,7 +47,7 @@ class AuthController extends Controller
             'email' => 'required|unique:users,email',
             'password' => 'required|confirmed'
         ]);
-        return AuthBusiness::registerInApp($request,$input);
+        return AuthBusiness::registerInApp($request, $input);
     }
 
     /**
@@ -55,14 +55,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function registerExternal(Request $request) 
+    public function registerExternal(Request $request)
     {
         $input = ['name', 'email', 'password', 'uuid'];
-        $this->validate($request,[
+        $this->validate($request, [
             'name' => 'required',
             'email' => 'required|unique:user,email',
         ]);
-        return AuthBusiness::registerExternal($request,$input);
+        return AuthBusiness::registerExternal($request, $input);
     }
 
     /**
@@ -82,8 +82,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-       Auth::logout();
-
+        Auth::logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
 

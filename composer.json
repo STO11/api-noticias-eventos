@@ -24,7 +24,9 @@
         },
         "classmap": [
             "app/Business/HttpCodes.php",
-            "app/Business/AuthBusiness.php"
+            "app/Business/AuthBusiness.php",
+            "app/Business/NewBusiness.php",
+            "app/Business/EventBusiness.php"
         ]
     },
     "autoload-dev": {
